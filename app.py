@@ -3,6 +3,7 @@ from fsrs_optimizer import Optimizer
 
 
 def interface_func(weights: str, ratings: str, request_retention: float) -> str:
+    weights = weights.replace('[', '').replace(']', '')
     optimizer = Optimizer()
     optimizer.w = list(map(lambda x: float(x.strip()), weights.split(',')))
     test_sequence = optimizer.preview_sequence(
