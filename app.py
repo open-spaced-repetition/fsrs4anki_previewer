@@ -27,7 +27,7 @@ iface = gr.Interface(
             lines=1,
             default="0.4, 0.9, 2.3, 10.9, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.18, 0.05, 0.34, 1.26, 0.29, 2.61",
         ),
-        gr.inputs.Textbox(label="ratings", lines=1, default="3,3,3,3,3,3,3"),
+        gr.inputs.Textbox(label="ratings", lines=1, default="3,3,3,3,1,3,3"),
         gr.inputs.Slider(
             label="Your Request Retention",
             minimum=0.6,
