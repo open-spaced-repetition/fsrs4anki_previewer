@@ -50,7 +50,9 @@ iface = gr.Interface(
             default=str(DEFAULT_WEIGHT)[1:-1],
         ),
         gr.inputs.Textbox(label="ratings", lines=1, default="3,3,3,3,1,3,3"),
-        gr.inputs.Textbox(label="delta_ts", lines=1, optional=True),
+        gr.inputs.Textbox(
+            label="delta_ts (requried by state history)", lines=1, optional=True
+        ),
         gr.inputs.Slider(
             label="Your Request Retention",
             minimum=0.6,
@@ -62,7 +64,7 @@ iface = gr.Interface(
     outputs=[
         gr.outputs.Textbox(label="test sequences"),
         gr.outputs.Textbox(label="default preview"),
-        gr.outputs.Textbox(label="state history"),
+        gr.outputs.Textbox(label="state history (require delta_ts)"),
     ],
 )
 
