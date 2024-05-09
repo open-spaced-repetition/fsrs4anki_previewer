@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import gradio as gr
 import os
 import sys
@@ -5,10 +6,12 @@ import sys
 if os.environ.get("DEV_MODE"):
     # for local development
     sys.path.insert(0, os.path.abspath("../fsrs-optimizer/src/fsrs_optimizer/"))
-from fsrs_optimizer import Optimizer, DEFAULT_WEIGHT
+from fsrs_optimizer import Optimizer, DEFAULT_WEIGHT, FSRS, lineToTensor
 
 
-def interface_func(weights: str, ratings: str, request_retention: float) -> str:
+def interface_func(
+    weights: str, ratings: str, delta_ts: str, request_retention: float
+) -> str:
     weights = weights.replace("[", "").replace("]", "")
     optimizer = Optimizer()
     optimizer.w = list(map(lambda x: float(x.strip()), weights.split(",")))
@@ -16,7 +19,26 @@ def interface_func(weights: str, ratings: str, request_retention: float) -> str:
         ratings.replace(" ", ""), request_retention
     )
     default_preview = optimizer.preview(request_retention)
-    return test_sequence, default_preview
+    if delta_ts:
+        s_history, d_history = memory_state_sequence(ratings, delta_ts, optimizer.w)
+        return (
+            test_sequence,
+            default_preview,
+            f"s: {(', '.join(s_history))}\nd: {', '.join(d_history)}",
+        )
+    return test_sequence, default_preview, ""
+
+
+def memory_state_sequence(
+    r_history: str, t_history: str, weights: List[float]
+) -> Tuple[List[float], List[float]]:
+    fsrs = FSRS(weights)
+    line_tensor = lineToTensor(list(zip([t_history], [r_history]))[0]).unsqueeze(1)
+    outputs, _ = fsrs(line_tensor)
+    stabilities, difficulties = outputs.transpose(0, 1)[0].transpose(0, 1)
+    return map(lambda x: str(round(x, 2)), stabilities.tolist()), map(
+        lambda x: str(round(x, 2)), difficulties.tolist()
+    )
 
 
 iface = gr.Interface(
@@ -28,6 +50,7 @@ iface = gr.Interface(
             default=str(DEFAULT_WEIGHT)[1:-1],
         ),
         gr.inputs.Textbox(label="ratings", lines=1, default="3,3,3,3,1,3,3"),
+        gr.inputs.Textbox(label="delta_ts", lines=1, optional=True),
         gr.inputs.Slider(
             label="Your Request Retention",
             minimum=0.6,
@@ -39,6 +62,7 @@ iface = gr.Interface(
     outputs=[
         gr.outputs.Textbox(label="test sequences"),
         gr.outputs.Textbox(label="default preview"),
+        gr.outputs.Textbox(label="state history"),
     ],
 )
 
