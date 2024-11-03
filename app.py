@@ -27,11 +27,11 @@ def convert_delta_ts(delta_ts: str) -> List[str]:
 
 
 def interface_func(
-    weights: str, ratings: str, delta_ts: str, request_retention: float
+    parameters: str, ratings: str, delta_ts: str, request_retention: float
 ) -> Tuple[str, str, str]:
-    weights = weights.replace("[", "").replace("]", "")
+    parameters = parameters.replace("[", "").replace("]", "")
     optimizer = Optimizer()
-    optimizer.w = list(map(lambda x: float(x.strip()), weights.split(",")))
+    optimizer.w = list(map(lambda x: float(x.strip()), parameters.split(",")))
     test_sequence = optimizer.preview_sequence(
         ratings.replace(" ", ""), request_retention
     )
@@ -53,9 +53,9 @@ def interface_func(
 
 
 def memory_state_sequence(
-    r_history: str, t_history: str, weights: List[float]
+    r_history: str, t_history: str, parameters: List[float]
 ) -> Tuple[List[str], List[str]]:
-    fsrs = FSRS(weights)
+    fsrs = FSRS(parameters)
     line_tensor = lineToTensor(list(zip([t_history], [r_history]))[0]).unsqueeze(1)
     outputs, _ = fsrs(line_tensor)
     stabilities, difficulties = outputs.transpose(0, 1)[0].transpose(0, 1)
