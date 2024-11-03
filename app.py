@@ -69,7 +69,7 @@ demo = gr.Interface(
     fn=interface_func,
     inputs=[
         gr.Textbox(
-            label="weights",
+            label="parameters",
             lines=1,
             value=str(DEFAULT_PARAMETER)[1:-1],
         ),
