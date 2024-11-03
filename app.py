@@ -65,7 +65,7 @@ def memory_state_sequence(
     )
 
 
-iface = gr.Interface(
+demo = gr.Interface(
     fn=interface_func,
     inputs=[
         gr.Textbox(
@@ -90,4 +90,4 @@ iface = gr.Interface(
     ],
 )
 
-iface.launch()
+demo.launch()
