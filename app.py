@@ -69,14 +69,14 @@ demo = gr.Interface(
     fn=interface_func,
     inputs=[
         gr.Textbox(
-            label="parameters",
+            label="FSRS-5 parameters",
             lines=1,
             value=str(DEFAULT_PARAMETER)[1:-1],
         ),
         gr.Textbox(label="ratings", lines=1, value="3,3,3,3,1,3,3"),
         gr.Textbox(label="delta_ts (requried by state history)", lines=1, value=""),
         gr.Slider(
-            label="Your Request Retention",
+            label="Your Desired Retention",
             minimum=0.6,
             maximum=0.97,
             step=0.01,
@@ -86,7 +86,7 @@ demo = gr.Interface(
     outputs=[
         gr.Textbox(label="test sequences"),
         gr.Textbox(label="default preview"),
-        gr.Textbox(label="state history (require delta_ts)"),
+        gr.Textbox(label="memory state history (require delta_ts)"),
     ],
 )
 
